@@ -1,0 +1,5 @@
+insere carro automovel
+insere carro veiculo
+insere alto elevado
+insere monitor tela
+fim
