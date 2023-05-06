@@ -6,15 +6,16 @@ int main(void) {
   Palavra *arvore;
   int sair, contador_de_entrada,mudou_altura;
   char leitura[100], op[12], palavra[30], sinonimo[30];
-  arvore = lerDoArquivo(NULL, "dados.txt");
+  arvore = carregar(NULL, "dados.txt");
   sair = 0;
-  mostrarArvoreDePalavrasEmPreOrdem(arvore);
+  mostrarArvoreDePalavrasEmOrdem(arvore);
   do {
     fgets(leitura, sizeof(leitura), stdin);
     contador_de_entrada = sscanf(leitura, "%s %s %s", op, palavra, sinonimo);
     
     if(strcmp(op, "insere") == 0) {
       arvore = inserirPalavra(arvore, palavra, sinonimo, &mudou_altura);
+      mudou_altura = 0;
       arvore = inserirPalavra(arvore, sinonimo, palavra, &mudou_altura);
     }
 
@@ -26,12 +27,15 @@ int main(void) {
         if(temp->arvore_sinonimos) {
           mostrarArvoreDeSinonimosEmOrdem(temp->arvore_sinonimos);
         }
+      } else {
+        printf("hein?\n");
       }
     }
 
     if(strcmp(op, "remove") == 0) {
       if(contador_de_entrada == 3) {
-        
+        arvore = removerSinonimoAssociado(arvore, palavra, sinonimo);
+        arvore = removerSinonimoAssociado(arvore, sinonimo, palavra);
       }
     }
 

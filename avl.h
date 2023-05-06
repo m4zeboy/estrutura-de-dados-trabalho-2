@@ -35,12 +35,12 @@ void liberarSinonimo(Sinonimo *no) {
 }
 
 /* A função liberarArvoreDeSinônimos() percorre a árvore de sinônimos em pré-ordem e libera a memória alocada para cada nó. */
-void liberarArvoreDeSinônimos(Sinonimo *raiz) {
+void liberarArvoreDeSinonimos(Sinonimo *raiz) {
   Sinonimo *temp = raiz->dir;
   if(raiz) {
-    liberarArvoreDeSinônimos(raiz);
+    liberarArvoreDeSinonimos(raiz);
     liberarSinonimo(raiz);
-    liberarArvoreDeSinônimos(temp);
+    liberarArvoreDeSinonimos(temp);
   }
 }
 
@@ -339,7 +339,7 @@ void liberarPalavra(Palavra *no);
 void liberarPalavra(Palavra *no) {
   if(no) {
     free(no->palavra);
-    liberarArvoreDeSinônimos(no->arvore_sinonimos);
+    liberarArvoreDeSinonimos(no->arvore_sinonimos);
     free(no);
   }
 }
@@ -605,17 +605,21 @@ Palavra *removerSinonimoAssociado(Palavra *raiz, char *palavra, char *sinonimo) 
     raiz->arvore_sinonimos = removerSinonimo(raiz->arvore_sinonimos, sinonimo, &mudou_altura);
     return raiz;
   } else if(strcmp(palavra, raiz->palavra) < 0) {
-    return removerSinonimoAssociado(raiz->esq, palavra, sinonimo);
+    raiz->esq = removerSinonimoAssociado(raiz->esq, palavra, sinonimo);
+    return raiz;
+  } else {
+    raiz->dir = removerSinonimoAssociado(raiz->dir, palavra, sinonimo);
+    return raiz;
   }
 }
 /* A função mostrarArvoreDePalavrasEmPreOrdem() percorre a árvore de palavras em pré ordem e mostra a palavra guardada em cada nó. */
-void mostrarArvoreDePalavrasEmPreOrdem(Palavra *raiz){
+void mostrarArvoreDePalavrasEmOrdem(Palavra *raiz){
   if(raiz) {
+    mostrarArvoreDePalavrasEmOrdem(raiz->esq);
     printf("%s\n", raiz->palavra);
     mostrarArvoreDeSinonimosEmOrdem(raiz->arvore_sinonimos);
+    mostrarArvoreDePalavrasEmOrdem(raiz->dir);
   }
-  if(raiz->esq) mostrarArvoreDePalavrasEmPreOrdem(raiz->esq);
-  if(raiz->dir) mostrarArvoreDePalavrasEmPreOrdem(raiz->dir);
 }
 
 /* A função totalDePalavras() percorre a estrutura e retorna quantos nós existem na arvóre de palavras. */
