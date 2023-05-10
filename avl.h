@@ -120,51 +120,38 @@ Sinonimo *inserirSinonimo(Sinonimo *raiz, char *sinonimo, int *mudou_altura) {
   else if(strcmp(sinonimo, raiz->sinonimo) < 0) { 
     raiz->esq = inserirSinonimo(raiz->esq, sinonimo, mudou_altura);
     if(*mudou_altura == 1) {
-      switch(raiz->fb) {
-        case 1:
-          raiz->fb = 0;
-          *mudou_altura = 0; 
-        break;
-        case 0:
-          raiz->fb = -1;
-        break;
-        case -1:
-          if(raiz->esq->fb == -1) {
-            printf("RSD %s\n", raiz->sinonimo);
-            raiz = RSD_SINONIMO(raiz);
-          } else {
-            printf("RDD %s\n", raiz->sinonimo);
-            raiz = RDD_SINONIMO(raiz);
-          }
-          *mudou_altura = 0;
-          raiz->fb = 0;
-        break;
-      }
+      if(raiz->fb == 1) {
+        raiz->fb = 0;
+        *mudou_altura = 0; 
+      }else if(raiz->fb == 0) {
+        raiz->fb = -1;
+      } else {
+        if(raiz->esq->fb == -1) {
+          raiz = RSD_SINONIMO(raiz);
+        } else {
+          raiz = RDD_SINONIMO(raiz);
+        }
+        *mudou_altura = 0;
+        raiz->fb = 0;
+      }     
     }
-    
     return raiz;
   } else {
     raiz->dir = inserirSinonimo(raiz->dir, sinonimo, mudou_altura);
     if(*mudou_altura == 1) {
-      switch(raiz->fb) {
-        case -1:
-          raiz->fb = 0;
-          *mudou_altura = 0;
-          break;
-        case 0:
-          raiz->fb = 1;
-          break;
-        case 1:
-          if(raiz->dir->fb == 1) {
-            printf("RSE %s\n", raiz->sinonimo);
-            raiz = RSE_SINONIMO(raiz);
-          } else {
-            printf("RDE %s\n", raiz->sinonimo);
-            raiz = RDE_SINONIMO(raiz);
-          }
-          raiz->fb = 0;
-          *mudou_altura = 0;
-          break;
+      if(raiz->fb == -1) {
+        raiz->fb = 0;
+        *mudou_altura = 0;
+      } else if(raiz->fb == 0) {
+        raiz->fb = 1;
+      } else {
+        if(raiz->dir->fb == 1) {
+          raiz = RSE_SINONIMO(raiz);
+        } else {
+          raiz = RDE_SINONIMO(raiz);
+        }
+        raiz->fb = 0;
+        *mudou_altura = 0;
       }
     }
     return raiz;
@@ -202,48 +189,15 @@ Sinonimo *removerSinonimo(Sinonimo *raiz, char *sinonimo, int *mudou_altura) {
       strcpy(raiz->sinonimo, substituto->sinonimo);
       raiz->esq = removerSinonimo(raiz->esq, substituto->sinonimo, mudou_altura);
       if(*mudou_altura == 1) {
-        switch(raiz->fb) {
-          case -1:
-            raiz->fb = 0;
-          break;
-          case 0:
-            raiz->fb = 1;
-            *mudou_altura = 0;
-          break;
-          case 1:
-            if(raiz->dir->fb == 0) {
-              raiz = RSE_SINONIMO(raiz);
-              raiz->esq->fb = 1;
-              raiz->fb = -1;
-              *mudou_altura = 0;
-            } else if(raiz->dir->fb == 1) {
-              raiz = RSE_SINONIMO(raiz);
-              raiz->dir->fb = 0;
-              raiz->fb = 0;
-            } else {
-              raiz = RDE_SINONIMO(raiz);
-              raiz->fb = 0;
-            }
-          break;
-        }
-     }
-      return raiz;
-    }
-  } else if(strcmp(sinonimo, raiz->sinonimo) < 0) {
-    raiz->esq = removerSinonimo(raiz->esq, sinonimo, mudou_altura);
-    if(*mudou_altura == 1) {
-      switch(raiz->fb) {
-        case -1:
+        if(raiz->fb == -1) {
           raiz->fb = 0;
-        break;
-        case 0:
+        } else if(raiz->fb == 0) {
           raiz->fb = 1;
           *mudou_altura = 0;
-        break;
-        case 1:
+        } else {
           if(raiz->dir->fb == 0) {
             raiz = RSE_SINONIMO(raiz);
-            raiz->dir->fb = 1;
+            raiz->esq->fb = 1;
             raiz->fb = -1;
             *mudou_altura = 0;
           } else if(raiz->dir->fb == 1) {
@@ -254,36 +208,57 @@ Sinonimo *removerSinonimo(Sinonimo *raiz, char *sinonimo, int *mudou_altura) {
             raiz = RDE_SINONIMO(raiz);
             raiz->fb = 0;
           }
-        break;
+        }
+     }
+      return raiz;
+    }
+  } else if(strcmp(sinonimo, raiz->sinonimo) < 0) {
+    raiz->esq = removerSinonimo(raiz->esq, sinonimo, mudou_altura);
+    if(*mudou_altura == 1) {
+      if(raiz->fb == -1) {
+        raiz->fb = 0;
+      } else if(raiz->fb == 0) {
+        raiz->fb = 1;
+        *mudou_altura = 0;
+      } else {
+        if(raiz->dir->fb == 0) {
+          raiz = RSE_SINONIMO(raiz);
+          raiz->dir->fb = 1;
+          raiz->fb = -1;
+          *mudou_altura = 0;
+        } else if(raiz->dir->fb == 1) {
+          raiz = RSE_SINONIMO(raiz);
+          raiz->dir->fb = 0;
+          raiz->fb = 0;
+        } else {
+          raiz = RDE_SINONIMO(raiz);
+          raiz->fb = 0;
+        }
       }
     }
     return raiz;
   } else {
     raiz->dir = removerSinonimo(raiz->dir, sinonimo, mudou_altura);
     if(*mudou_altura == 1) {
-      switch(raiz->fb) {
-        case 1:
-          raiz->fb = 0;
-        break;
-        case 0:
+      if(raiz->fb == 1) {
+        raiz->fb = 0;
+      } else if(raiz->fb == 0) {
+        raiz->fb = -1;
+        *mudou_altura = 0;
+      } else{
+        if(raiz->esq->fb == 0) {
+          raiz = RSD_SINONIMO(raiz);
           raiz->fb = -1;
+          raiz->dir->fb = 1;
           *mudou_altura = 0;
-        break;
-        case -1:
-          if(raiz->esq->fb == 0) {
-            raiz = RSD_SINONIMO(raiz);
-            raiz->fb = -1;
-            raiz->dir->fb = 1;
-            *mudou_altura = 0;
-          } else if(raiz->esq->fb == -1) {
-            raiz = RSD_SINONIMO(raiz);
-            raiz->fb = 0;
-            raiz->dir->fb = 0;
-          } else if(raiz->esq->fb == 1) {
-            raiz = RDD_SINONIMO(raiz);
-            raiz->fb = 0;
-          }
-        break;
+        } else if(raiz->esq->fb == -1) {
+          raiz = RSD_SINONIMO(raiz);
+          raiz->fb = 0;
+          raiz->dir->fb = 0;
+        } else if(raiz->esq->fb == 1) {
+          raiz = RDD_SINONIMO(raiz);
+          raiz->fb = 0;
+        }
       }
     }
     return raiz;
@@ -424,46 +399,38 @@ Palavra *inserirPalavra(Palavra *raiz, char *palavra, char *sinonimo, int *mudou
   } else if(strcmp(palavra, raiz->palavra) < 0 ) {
     raiz->esq = inserirPalavra(raiz->esq, palavra, sinonimo, mudou_altura);
     if(*mudou_altura == 1) {
-      switch(raiz->fb) {
-        case 1:
-          raiz->fb = 0;
-          *mudou_altura = 0; 
-        break;
-        case 0:
-          raiz->fb = -1;
-        break;
-        case -1:
-          if(raiz->esq->fb == -1) {
-            raiz = RSD_PALAVRA(raiz);
-          } else {
-            raiz = RDD_PALAVRA(raiz);
-          }
-          *mudou_altura = 0;
-          raiz->fb = 0;
-        break;
+      if(raiz->fb == 1) {
+        raiz->fb = 0;
+        *mudou_altura = 0;
+      } else if(raiz->fb == 0) {
+        raiz->fb = -1;
+      } else {
+        if(raiz->esq->fb == -1) {
+          raiz = RSD_PALAVRA(raiz);
+        } else {
+          raiz = RDD_PALAVRA(raiz);
+        }
+        *mudou_altura = 0;
+        raiz->fb = 0;
       }
     }
     return raiz;
   } else {
     raiz->dir = inserirPalavra(raiz->dir, palavra,sinonimo, mudou_altura);
     if(*mudou_altura == 1) {
-      switch(raiz->fb) {
-        case -1:
-          raiz->fb = 0;
-          *mudou_altura = 0;
-          break;
-        case 0:
-          raiz->fb = 1;
-          break;
-        case 1:
-          if(raiz->dir->fb == 1) {
-            raiz = RSE_PALAVRA(raiz);
-          } else {
-            raiz = RDE_PALAVRA(raiz);
-          }
-          raiz->fb = 0;
-          *mudou_altura = 0;
-          break;
+      if(raiz->fb == -1) {
+        raiz->fb = 0;
+        *mudou_altura = 0;
+      } else if(raiz->fb == 0){
+        raiz->fb = 1;
+      } else {
+        if(raiz->dir->fb == 1) {
+          raiz = RSE_PALAVRA(raiz);
+        } else {
+          raiz = RDE_PALAVRA(raiz);
+        }
+        raiz->fb = 0;
+        *mudou_altura = 0;
       }
     }
     return raiz;
@@ -509,29 +476,26 @@ Palavra *removerPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
       strcpy(raiz->palavra, substituto->palavra);
       raiz->esq = removerPalavra(raiz->esq, substituto->palavra, mudou_altura);
       if(*mudou_altura == 1) {
-        switch(raiz->fb) {
-          case -1:
-            raiz->fb = 0;
-          break;
-          case 0:
-            raiz->fb = 1;
+
+        if(raiz->fb == -1) {
+          raiz->fb = 0;
+        } else if(raiz->fb==0) {
+          raiz->fb = 1;
+          *mudou_altura = 0;
+        } else {
+          if(raiz->dir->fb == 0) {
+            raiz = RSE_PALAVRA(raiz);
+            raiz->esq->fb = 1;
+            raiz->fb = -1;
             *mudou_altura = 0;
-          break;
-          case 1:
-            if(raiz->dir->fb == 0) {
-              raiz = RSE_PALAVRA(raiz);
-              raiz->esq->fb = 1;
-              raiz->fb = -1;
-              *mudou_altura = 0;
-            } else if(raiz->dir->fb == 1) {
-              raiz = RSE_PALAVRA(raiz);
-              raiz->dir->fb = 0;
-              raiz->fb = 0;
-            } else {
-              raiz = RDE_PALAVRA(raiz);
-              raiz->fb = 0;
-            }
-          break;
+          } else if(raiz->dir->fb == 1) {
+            raiz = RSE_PALAVRA(raiz);
+            raiz->dir->fb = 0;
+            raiz->fb = 0;
+          } else {
+            raiz = RDE_PALAVRA(raiz);
+            raiz->fb = 0;
+          }
         }
      }
       return raiz;
@@ -539,6 +503,8 @@ Palavra *removerPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
   } else if(strcmp(palavra, raiz->palavra) < 0) {
     raiz->esq = removerPalavra(raiz->esq, palavra, mudou_altura);
     if(*mudou_altura == 1) {
+
+
       switch(raiz->fb) {
         case -1:
           raiz->fb = 0;
@@ -568,29 +534,25 @@ Palavra *removerPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
   } else {
     raiz->dir = removerPalavra(raiz->dir, palavra, mudou_altura);
     if(*mudou_altura == 1) {
-      switch(raiz->fb) {
-        case 1:
-          raiz->fb = 0;
-        break;
-        case 0:
+      if(raiz->fb == 1) {
+        raiz->fb = 0;
+      } else if(raiz->fb == 0) {
+        raiz->fb = -1;
+        *mudou_altura = 0;
+      } else {
+        if(raiz->esq->fb == 0) {
+          raiz = RSD_PALAVRA(raiz);
           raiz->fb = -1;
+          raiz->dir->fb = 1;
           *mudou_altura = 0;
-        break;
-        case -1:
-          if(raiz->esq->fb == 0) {
-            raiz = RSD_PALAVRA(raiz);
-            raiz->fb = -1;
-            raiz->dir->fb = 1;
-            *mudou_altura = 0;
-          } else if(raiz->esq->fb == -1) {
-            raiz = RSD_PALAVRA(raiz);
-            raiz->fb = 0;
-            raiz->dir->fb = 0;
-          } else if(raiz->esq->fb == 1) {
-            raiz = RDD_PALAVRA(raiz);
-            raiz->fb = 0;
-          }
-        break;
+        } else if(raiz->esq->fb == -1) {
+          raiz = RSD_PALAVRA(raiz);
+          raiz->fb = 0;
+          raiz->dir->fb = 0;
+        } else if(raiz->esq->fb == 1) {
+          raiz = RDD_PALAVRA(raiz);
+          raiz->fb = 0;
+        }
       }
     }
     return raiz;

@@ -6,7 +6,8 @@ int main(void) {
   Palavra *arvore;
   int sair, contador_de_entrada,mudou_altura;
   char leitura[100], op[12], palavra[30], sinonimo[30];
-  arvore = carregar(NULL, "dados.txt");
+  arvore = NULL;
+  arvore = carregar(arvore, "dados.txt");
   sair = 0;
   mostrarArvoreDePalavrasEmOrdem(arvore);
   do {

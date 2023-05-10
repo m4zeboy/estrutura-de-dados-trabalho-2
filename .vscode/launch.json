@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "//wsl.localhost/Ubuntu-18.04/home/moises/implementacao2",
-      "program": "//wsl.localhost/Ubuntu-18.04/home/moises/implementacao2/build/Debug/outDebug",
+      "cwd": "d:/Moisés/Documents/UFMS/3sem/ED1/implementacao2",
+      "program": "d:/Moisés/Documents/UFMS/3sem/ED1/implementacao2/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

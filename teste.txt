@@ -1,6 +1,8 @@
-insere carro automovel
-insere carro veiculo
-insere alto elevado
-insere monitor tela
-remove automovel carro
+insere saudade anelo
+insere saudade anseio
+insere saudade lembranca
+insere saudade melancolia
+insere saudade nostalgia
+insere saudade pungencia
+insere saudade recordacao
 fim
