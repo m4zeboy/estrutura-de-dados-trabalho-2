@@ -26,7 +26,6 @@ Sinonimo *criarSinonimo(char *sinonimo) {
 }
 
 /* A função liberarSinonimo() libera a memoria alocada do sinonimo passado por argumento. */
-void liberarSinonimo(Sinonimo *no);
 void liberarSinonimo(Sinonimo *no) {
   if(no) {
     free(no->sinonimo);
@@ -36,11 +35,10 @@ void liberarSinonimo(Sinonimo *no) {
 
 /* A função liberarArvoreDeSinônimos() percorre a árvore de sinônimos em pré-ordem e libera a memória alocada para cada nó. */
 void liberarArvoreDeSinonimos(Sinonimo *raiz) {
-  Sinonimo *temp = raiz->dir;
   if(raiz) {
+    liberarArvoreDeSinonimos(raiz->esq);
+    liberarSinonimo(raiz->dir);
     liberarArvoreDeSinonimos(raiz);
-    liberarSinonimo(raiz);
-    liberarArvoreDeSinonimos(temp);
   }
 }
 
@@ -55,57 +53,81 @@ Sinonimo *RSD_SINONIMO(Sinonimo *raiz) {
   raiz->esq = t2;
 
   raiz->fb = 0;
+  u->fb = 0;
+
   return u;
 }
 /* Rotação Dupla para Direita. */
 Sinonimo *RDD_SINONIMO(Sinonimo *raiz) {
-  Sinonimo *u, *z, *t2, *t3;
-  u = raiz->esq; z = u->dir;
-  t2 = z->esq; t3 = z->dir;
+  Sinonimo *u, *v, *t2, *t3;
+  u = raiz->esq;
+  v = u->dir;
 
-  raiz->esq = t3;
+  t2 = v->esq;
+  t3 = v->dir;
+
+  v->esq = u;
+  v->dir = raiz;
+
+  raiz->esq =t3;
   u->dir = t2;
-  z->esq = u; z->dir = raiz;
-  if(z->fb == -1) raiz->fb = 1;
-  else raiz->fb = 0;
 
-  if(z->fb == 1) u->fb =-1; 
-  else u->fb = 0;
+  if(v->fb == -1) {
+    u->fb = 1;
+  } else {
+    u->fb =0;
+  }
+  if(v->fb == 1) {
+    raiz->fb = -1;
+  } else {
+    raiz->fb = 0;
+  }
+  v->fb = 0;
 
-  return z;
+  return v;
 }
 /* Rotação Simples para Esquerda. */
 Sinonimo *RSE_SINONIMO(Sinonimo *raiz) {
   Sinonimo *u, *t2;
-  u = raiz->dir;
+  u =  raiz->dir;
   t2 = u->esq;
 
   u->esq = raiz;
   raiz->dir = t2;
+
   raiz->fb = 0;
-  
+  u->fb = 0;
+
   return u;
 }
 /* Rotação Dupla para Esquerda. */
 Sinonimo *RDE_SINONIMO(Sinonimo *raiz) {
-  Sinonimo *b, *c, *t2, *t3;
+  Sinonimo *u, *z, *t2, *t3;
+  u = raiz->dir;
+  z = u->esq;
 
-  b = raiz->dir; c = b->esq;
-  t2 = c->esq; t3 = c->dir;
+  t2 = z->esq;
+  t3 = z->dir;
+  
+  z->dir = u;
+  z->esq =raiz;
 
+  u->esq = t3;
   raiz->dir = t2;
-  b->esq = t3;
+  
+  if(z->fb == 1) {
+    u->fb = -1;
+  } else {
+    u->fb = 0;
+  }
+  if(z->fb == -1) {
+    raiz->fb = 1;
+  } else {
+    raiz->fb = 0;
+  }
+  z->fb = 0;
 
-  c->esq = raiz;
-  c->dir = b;
-
-  if(c->fb == 1) raiz->fb = -1;
-  else raiz->fb = 0;
-
-  if(c->fb == -1) b->fb = 1;
-  else b->fb = 0;
-
-  return c;
+  return z;
 }
 
 /* A função inserirSinonimo() tenta inserir um sinonimo na estrutra, e realiza as operações de balanceamento caso necessário. */
@@ -319,6 +341,14 @@ void liberarPalavra(Palavra *no) {
   }
 }
 
+void liberaArvoreDePalavras(Palavra *raiz) {
+  if(raiz) {
+    liberaArvoreDePalavras(raiz->esq);
+    liberaArvoreDePalavras(raiz->dir);
+    liberarPalavra(raiz);
+  }
+}
+
 /* As funções abaixo realizam operações de rotação para a árvore de PALAVRAS. */
 /* Rotação Simples para Direita. */
 Palavra *RSD_PALAVRA(Palavra *raiz) {
@@ -330,74 +360,95 @@ Palavra *RSD_PALAVRA(Palavra *raiz) {
   raiz->esq = t2;
 
   raiz->fb = 0;
+  u->fb = 0;
+
   return u;
 }
 /* Rotação Dupla para Direita. */
 Palavra *RDD_PALAVRA(Palavra *raiz) {
-  Palavra *u, *z, *t2, *t3;
-  u = raiz->esq; z = u->dir;
-  t2 = z->esq; t3 = z->dir;
+  Palavra *u, *v, *t2, *t3;
+  u = raiz->esq;
+  v = u->dir;
 
-  raiz->esq = t3;
+  t2 = v->esq;
+  t3 = v->dir;
+
+  v->esq = u;
+  v->dir = raiz;
+
+  raiz->esq =t3;
   u->dir = t2;
-  z->esq = u; z->dir = raiz;
-  if(z->fb == -1) raiz->fb = 1;
-  else raiz->fb = 0;
 
-  if(z->fb == 1) u->fb =-1; 
-  else u->fb = 0;
+  if(v->fb == -1) {
+    u->fb = 1;
+  } else {
+    u->fb =0;
+  }
+  if(v->fb == 1) {
+    raiz->fb = -1;
+  } else {
+    raiz->fb = 0;
+  }
+  v->fb = 0;
 
-  return z;
+  return v;
 }
 /* Rotação Simples para Esquerda. */
 Palavra *RSE_PALAVRA(Palavra *raiz) {
   Palavra *u, *t2;
-  u = raiz->dir;
+  u =  raiz->dir;
   t2 = u->esq;
 
   u->esq = raiz;
   raiz->dir = t2;
+
   raiz->fb = 0;
-  
+  u->fb = 0;
+
   return u;
 }
 /* Rotação Dupla para Direita. */
 Palavra *RDE_PALAVRA(Palavra *raiz) {
-  Palavra *b, *c, *t2, *t3;
+  Palavra *u, *z, *t2, *t3;
+  u = raiz->dir;
+  z = u->esq;
 
-  b = raiz->dir; c = b->esq;
-  t2 = c->esq; t3 = c->dir;
+  t2 = z->esq;
+  t3 = z->dir;
+  
+  z->dir = u;
+  z->esq =raiz;
 
+  u->esq = t3;
   raiz->dir = t2;
-  b->esq = t3;
+  
+  if(z->fb == 1) {
+    u->fb = -1;
+  } else {
+    u->fb = 0;
+  }
+  if(z->fb == -1) {
+    raiz->fb = 1;
+  } else {
+    raiz->fb = 0;
+  }
+  z->fb = 0;
 
-  c->esq = raiz;
-  c->dir = b;
-
-  if(c->fb == 1) raiz->fb = -1;
-  else raiz->fb = 0;
-
-  if(c->fb == -1) b->fb = 1;
-  else b->fb = 0;
-
-  return c;
+  return z;
 }
 
 /* A função inserirPalavra() tenta inserir uma palavra na estrutra, e realiza as operações de balanceamento caso necessário. */
-Palavra *inserirPalavra(Palavra *raiz, char *palavra, char *sinonimo, int *mudou_altura) {
-  int mudou_altura_sinonimo = 0;
+Palavra *inserirPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
   if(raiz == NULL) {
     Palavra *nova;
     nova = criarPalavra(palavra);
-    nova->arvore_sinonimos = inserirSinonimo(nova->arvore_sinonimos, sinonimo, &mudou_altura_sinonimo);
     *mudou_altura = 1;
     return nova;
   } else if(strcmp(palavra, raiz->palavra) == 0) {
     *mudou_altura = 0;
-    raiz->arvore_sinonimos = inserirSinonimo(raiz->arvore_sinonimos, sinonimo, &mudou_altura_sinonimo);
     return raiz;
   } else if(strcmp(palavra, raiz->palavra) < 0 ) {
-    raiz->esq = inserirPalavra(raiz->esq, palavra, sinonimo, mudou_altura);
+    raiz->esq = inserirPalavra(raiz->esq, palavra, mudou_altura);
     if(*mudou_altura == 1) {
       if(raiz->fb == 1) {
         raiz->fb = 0;
@@ -416,7 +467,7 @@ Palavra *inserirPalavra(Palavra *raiz, char *palavra, char *sinonimo, int *mudou
     }
     return raiz;
   } else {
-    raiz->dir = inserirPalavra(raiz->dir, palavra,sinonimo, mudou_altura);
+    raiz->dir = inserirPalavra(raiz->dir, palavra, mudou_altura);
     if(*mudou_altura == 1) {
       if(raiz->fb == -1) {
         raiz->fb = 0;
@@ -443,6 +494,12 @@ Palavra *buscaPalavra(Palavra *raiz, char *palavra) {
   else if(strcmp(palavra, raiz->palavra) == 0) return raiz;
   else if(strcmp(palavra, raiz->palavra) < 0) return buscaPalavra(raiz->esq, palavra);
   else return buscaPalavra(raiz->dir, palavra);
+}
+
+void inserirSinonimoAssociado(Palavra *raiz, char *palavra, char *sinonimo) {
+  Palavra *temp = buscaPalavra(raiz, palavra);
+  int h = 0;
+  temp->arvore_sinonimos = inserirSinonimo(temp->arvore_sinonimos, sinonimo, &h);
 }
 
 /* A função removerPalavra() busca por uma palavra na árvore em seguida realiza sua remoção. */
@@ -476,7 +533,6 @@ Palavra *removerPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
       strcpy(raiz->palavra, substituto->palavra);
       raiz->esq = removerPalavra(raiz->esq, substituto->palavra, mudou_altura);
       if(*mudou_altura == 1) {
-
         if(raiz->fb == -1) {
           raiz->fb = 0;
         } else if(raiz->fb==0) {
@@ -503,31 +559,25 @@ Palavra *removerPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
   } else if(strcmp(palavra, raiz->palavra) < 0) {
     raiz->esq = removerPalavra(raiz->esq, palavra, mudou_altura);
     if(*mudou_altura == 1) {
-
-
-      switch(raiz->fb) {
-        case -1:
-          raiz->fb = 0;
-        break;
-        case 0:
-          raiz->fb = 1;
+      if(raiz->fb == -1) {
+        raiz->fb = 0;
+      } else if(raiz->fb == 0) {
+        raiz->fb = 1;
+        *mudou_altura = 0;
+      } else {
+        if(raiz->dir->fb == 0) {
+          raiz = RSE_PALAVRA(raiz);
+          raiz->dir->fb = 1;
+          raiz->fb = -1;
           *mudou_altura = 0;
-        break;
-        case 1:
-          if(raiz->dir->fb == 0) {
-            raiz = RSE_PALAVRA(raiz);
-            raiz->dir->fb = 1;
-            raiz->fb = -1;
-            *mudou_altura = 0;
-          } else if(raiz->dir->fb == 1) {
-            raiz = RSE_PALAVRA(raiz);
-            raiz->dir->fb = 0;
-            raiz->fb = 0;
-          } else {
-            raiz = RDE_PALAVRA(raiz);
-            raiz->fb = 0;
-          }
-        break;
+        } else if(raiz->dir->fb == 1) {
+          raiz = RSE_PALAVRA(raiz);
+          raiz->dir->fb = 0;
+          raiz->fb = 0;
+        } else {
+          raiz = RDE_PALAVRA(raiz);
+          raiz->fb = 0;
+        }
       }
     }
     return raiz;
@@ -629,16 +679,16 @@ Palavra *lerPalavras(FILE *arq, Palavra *raiz, int total_palavras) {
   int i;
   for(i = 0; i < total_palavras; i++) {
     char palavra[30];
-    int total_sinonimos, j;
+    int total_sinonimos, j, h;
+    h = 0;
     fscanf(arq, "%s\n", palavra);
+    raiz = inserirPalavra(raiz, palavra, &h);
     /* Quantos sinônimos precisam ser adicionados na palavra atual. */
     fscanf(arq, "%d\n", &total_sinonimos);
     for(j = 0; j < total_sinonimos; j++) {
       char sinonimo[30];
-      int mudou_altura;
-      mudou_altura = 0;
-      fscanf(arq, "%s\n",sinonimo);
-      raiz = inserirPalavra(raiz, palavra, sinonimo, &mudou_altura);
+      fscanf(arq, "%s\n", sinonimo);
+      inserirSinonimoAssociado(raiz, palavra, sinonimo);  
     }
   }
   return raiz;

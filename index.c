@@ -15,9 +15,11 @@ int main(void) {
     contador_de_entrada = sscanf(leitura, "%s %s %s", op, palavra, sinonimo);
     
     if(strcmp(op, "insere") == 0) {
-      arvore = inserirPalavra(arvore, palavra, sinonimo, &mudou_altura);
+      arvore = inserirPalavra(arvore, palavra, &mudou_altura);
+      inserirSinonimoAssociado(arvore, palavra, sinonimo);
       mudou_altura = 0;
-      arvore = inserirPalavra(arvore, sinonimo, palavra, &mudou_altura);
+      arvore = inserirPalavra(arvore, sinonimo, &mudou_altura);
+      inserirSinonimoAssociado(arvore, sinonimo, palavra);
     }
 
     if(strcmp(op, "busca") == 0) {
@@ -37,6 +39,8 @@ int main(void) {
       if(contador_de_entrada == 3) {
         arvore = removerSinonimoAssociado(arvore, palavra, sinonimo);
         arvore = removerSinonimoAssociado(arvore, sinonimo, palavra);
+      } else if(contador_de_entrada == 2) {
+        arvore = removerPalavra(arvore,palavra, &mudou_altura);
       }
     }
 
@@ -46,5 +50,6 @@ int main(void) {
   } while (sair != 1);
   
   salvarNoArquivo(arvore, "dados.txt");
+  liberaArvoreDePalavras(arvore);
   return 0;
 }

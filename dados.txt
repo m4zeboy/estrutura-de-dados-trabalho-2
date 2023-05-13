@@ -1,13 +1,4 @@
-10
-anelo
-1
-saudade
-anseio
-1
-saudade
-carro
-1
-veiculo
+6
 lembranca
 1
 saudade
@@ -32,6 +23,3 @@ melancolia
 nostalgia
 pungencia
 recordacao
-veiculo
-1
-carro
