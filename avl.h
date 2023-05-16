@@ -1,3 +1,13 @@
+/****************************************************
+2 *                                                 *
+3 * Moisés Silva de Azevedo                         *
+4 * RGA 2022.0743.004-6                             *
+5 * Implementação 2                                 *
+6 * Disciplina: Estruturas de Dados e Programação I *
+7 * Professor: Ronaldo Fiorilo                      *
+8 *                                                 *
+9 ***************************************************/
+
 #ifndef AVL_H
 #define AVL_H
 
@@ -291,16 +301,8 @@ Sinonimo *removerSinonimo(Sinonimo *raiz, char *sinonimo, int *mudou_altura) {
 void mostrarArvoreDeSinonimosEmOrdem(Sinonimo *raiz);
 void mostrarArvoreDeSinonimosEmOrdem(Sinonimo *raiz) {
   if(raiz->esq) mostrarArvoreDeSinonimosEmOrdem(raiz->esq);
-  if(raiz) printf("\t%s\n", raiz->sinonimo);
+  if(raiz) printf("%s\n", raiz->sinonimo);
   if(raiz->dir) mostrarArvoreDeSinonimosEmOrdem(raiz->dir);
-}
-
-/* A função mostrarArvoreDeSinonimosEmPreOrdem() percorre a árvore de sinonimos em pré ordem e mostra o sinonimo guardado em cada nó. */
-void mostrarArvoreDeSinonimosEmPreOrdem(Sinonimo *raiz);
-void mostrarArvoreDeSinonimosEmPreOrdem(Sinonimo *raiz){
-  if(raiz) printf("%s | %d\n", raiz->sinonimo, raiz->fb);
-  if(raiz->esq) mostrarArvoreDeSinonimosEmPreOrdem(raiz->esq);
-  if(raiz->dir) mostrarArvoreDeSinonimosEmPreOrdem(raiz->dir);
 }
 
 /* A função totalDePalavras() percorre a estrutura e retorna quantos nós existem na arvóre de sinônimos. */
@@ -609,6 +611,7 @@ Palavra *removerPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
   }
 }
 
+/* A função removerSinonimoAssociado() remove um sinonimo da lista de sinonimos de uma dada palavra */
 Palavra *removerSinonimoAssociado(Palavra *raiz, char *palavra, char *sinonimo) {
   if(raiz == NULL) {
     return NULL;
@@ -624,6 +627,7 @@ Palavra *removerSinonimoAssociado(Palavra *raiz, char *palavra, char *sinonimo) 
     return raiz;
   }
 }
+
 /* A função mostrarArvoreDePalavrasEmPreOrdem() percorre a árvore de palavras em pré ordem e mostra a palavra guardada em cada nó. */
 void mostrarArvoreDePalavrasEmOrdem(Palavra *raiz){
   if(raiz) {
@@ -707,6 +711,28 @@ Palavra *carregar(Palavra *raiz, char *arquivo) {
     fclose(arq);
   }
   return raiz;
+}
+
+/* A função listaSinonimos() lista os sinonimos de uma árvore na mesma linha e separados por vírgula. */
+void listaSinonimos(Sinonimo *raiz) {
+  if(raiz) {
+    listaSinonimos(raiz->esq);
+    printf("%s, ", raiz->sinonimo);
+    listaSinonimos(raiz->dir);
+  }
+}
+
+/* A função lista() percorre a árvore em ordem e mostra a palavra e os sinonimos caso a palavra esteja no intervalo [ini,fim] */
+void lista(char *ini, char *fim, Palavra *raiz) {
+  if(raiz) {
+    lista(ini,fim, raiz->esq);
+    if(strncmp(raiz->palavra, ini, 1) >= 0  && strncmp(raiz->palavra, fim, 1) <= 0) {
+      printf("%s : ", raiz->palavra);
+      listaSinonimos(raiz->arvore_sinonimos);
+      printf("\n");
+    }
+    lista(ini,fim, raiz->dir);
+  }
 }
 
 #endif /* AVL_H */

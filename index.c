@@ -1,3 +1,13 @@
+/****************************************************
+2 *                                                 *
+3 * Moisés Silva de Azevedo                         *
+4 * RGA 2022.0743.004-6                             *
+5 * Implementação 2                                 *
+6 * Disciplina: Estruturas de Dados e Programação I *
+7 * Professor: Ronaldo Fiorilo                      *
+8 *                                                 *
+9 ***************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include "avl.h"
@@ -9,7 +19,6 @@ int main(void) {
   arvore = NULL;
   arvore = carregar(arvore, "dados.txt");
   sair = 0;
-  mostrarArvoreDePalavrasEmOrdem(arvore);
   do {
     fgets(leitura, sizeof(leitura), stdin);
     contador_de_entrada = sscanf(leitura, "%s %s %s", op, palavra, sinonimo);
@@ -26,7 +35,6 @@ int main(void) {
       Palavra *temp;
       temp = buscaPalavra(arvore, palavra);
       if(temp) {
-        printf("%s\n", temp->palavra);
         if(temp->arvore_sinonimos) {
           mostrarArvoreDeSinonimosEmOrdem(temp->arvore_sinonimos);
         }
@@ -42,6 +50,10 @@ int main(void) {
       } else if(contador_de_entrada == 2) {
         arvore = removerPalavra(arvore,palavra, &mudou_altura);
       }
+    }
+
+    if(strcmp(op, "lista") == 0) {
+      lista(palavra, sinonimo, arvore);
     }
 
     if(strcmp(op, "fim") == 0) {
