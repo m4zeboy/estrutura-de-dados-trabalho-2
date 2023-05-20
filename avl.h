@@ -47,8 +47,8 @@ void liberarSinonimo(Sinonimo *no) {
 void liberarArvoreDeSinonimos(Sinonimo *raiz) {
   if(raiz) {
     liberarArvoreDeSinonimos(raiz->esq);
-    liberarSinonimo(raiz->dir);
-    liberarArvoreDeSinonimos(raiz);
+    liberarArvoreDeSinonimos(raiz->dir);
+    liberarSinonimo(raiz);
   }
 }
 
@@ -298,10 +298,9 @@ Sinonimo *removerSinonimo(Sinonimo *raiz, char *sinonimo, int *mudou_altura) {
 }
 
 /* A função mostrarEmOrdem() percorre a árvore de sinônimos em ordem simétrica e mostra o sinonimo guardadas em cada nó. */
-void mostrarArvoreDeSinonimosEmOrdem(Sinonimo *raiz);
 void mostrarArvoreDeSinonimosEmOrdem(Sinonimo *raiz) {
   if(raiz->esq) mostrarArvoreDeSinonimosEmOrdem(raiz->esq);
-  if(raiz) printf("%s\n", raiz->sinonimo);
+  if(raiz) printf("%s\n", raiz->sinonimo, raiz->fb);
   if(raiz->dir) mostrarArvoreDeSinonimosEmOrdem(raiz->dir);
 }
 
@@ -320,7 +319,6 @@ typedef struct palavra {
 } Palavra;
 
 /* A função criarPalavra() aloca memória dinâmicamente para uma palavra e retorna o endereço de memória alocado. */
-Palavra *criarPalavra(char *palavra);
 Palavra *criarPalavra(char *palavra) {
   Palavra *nova = (Palavra *) malloc(sizeof(Palavra));
   if(nova == NULL) return NULL;
@@ -334,11 +332,11 @@ Palavra *criarPalavra(char *palavra) {
 }
 
 /* A função liberarPalavra() libera a memória alocada para a palavra em questão */
-void liberarPalavra(Palavra *no);
 void liberarPalavra(Palavra *no) {
   if(no) {
     free(no->palavra);
     liberarArvoreDeSinonimos(no->arvore_sinonimos);
+    no->arvore_sinonimos = NULL;
     free(no);
   }
 }
@@ -520,7 +518,7 @@ Palavra *removerPalavra(Palavra *raiz, char *palavra, int *mudou_altura) {
       *mudou_altura = 1;
       return temp;
     } else if(!raiz->esq && raiz->dir) {
-      /* um filho (direito)*/
+      /* um filho (direito) */
       Palavra *temp = raiz->dir;
       liberarPalavra(raiz);
       *mudou_altura = 1;
@@ -628,16 +626,6 @@ Palavra *removerSinonimoAssociado(Palavra *raiz, char *palavra, char *sinonimo) 
   }
 }
 
-/* A função mostrarArvoreDePalavrasEmPreOrdem() percorre a árvore de palavras em pré ordem e mostra a palavra guardada em cada nó. */
-void mostrarArvoreDePalavrasEmOrdem(Palavra *raiz){
-  if(raiz) {
-    mostrarArvoreDePalavrasEmOrdem(raiz->esq);
-    printf("%s\n", raiz->palavra);
-    mostrarArvoreDeSinonimosEmOrdem(raiz->arvore_sinonimos);
-    mostrarArvoreDePalavrasEmOrdem(raiz->dir);
-  }
-}
-
 /* A função totalDePalavras() percorre a estrutura e retorna quantos nós existem na arvóre de palavras. */
 unsigned int totalDePalavras(Palavra *raiz) {
   if(raiz == NULL) return 0;
@@ -727,7 +715,7 @@ void lista(char *ini, char *fim, Palavra *raiz) {
   if(raiz) {
     lista(ini,fim, raiz->esq);
     if(strncmp(raiz->palavra, ini, 1) >= 0  && strncmp(raiz->palavra, fim, 1) <= 0) {
-      printf("%s : ", raiz->palavra);
+      printf("%s ", raiz->palavra, raiz->fb);
       listaSinonimos(raiz->arvore_sinonimos);
       printf("\n");
     }

@@ -1,13 +1,4 @@
-6
-lembranca
-1
-saudade
-melancolia
-1
-saudade
-nostalgia
-1
-saudade
+3
 pungencia
 1
 saudade
@@ -15,11 +6,10 @@ recordacao
 1
 saudade
 saudade
-7
+6
 anelo
 anseio
 lembranca
 melancolia
-nostalgia
 pungencia
 recordacao
