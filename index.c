@@ -45,10 +45,19 @@ int main(void) {
 
     if(strcmp(op, "remove") == 0) {
       if(contador_de_entrada == 3) {
+        Palavra *temp;
         arvore = removerSinonimoAssociado(arvore, palavra, sinonimo);
         arvore = removerSinonimoAssociado(arvore, sinonimo, palavra);
+        temp = buscaPalavra(arvore, palavra);
+        if(temp->arvore_sinonimos == NULL) {
+          arvore = removerPalavra(arvore, palavra, &mudou_altura);
+        }
+        temp = buscaPalavra(arvore, sinonimo);
+        if(temp->arvore_sinonimos == NULL) {
+          arvore = removerPalavra(arvore, sinonimo, &mudou_altura);
+        }
       } else if(contador_de_entrada == 2) {
-        arvore = removerPalavra(arvore,palavra, &mudou_altura);
+        arvore = removerPalavra(arvore, palavra, &mudou_altura);
       }
     }
 

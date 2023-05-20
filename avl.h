@@ -715,7 +715,7 @@ void lista(char *ini, char *fim, Palavra *raiz) {
   if(raiz) {
     lista(ini,fim, raiz->esq);
     if(strncmp(raiz->palavra, ini, 1) >= 0  && strncmp(raiz->palavra, fim, 1) <= 0) {
-      printf("%s ", raiz->palavra, raiz->fb);
+      printf("%s: ", raiz->palavra, raiz->fb);
       listaSinonimos(raiz->arvore_sinonimos);
       printf("\n");
     }
